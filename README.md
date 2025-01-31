@@ -63,30 +63,25 @@ Harmony is a programming language designed for music lovers, making coding as in
 | ``` function findPrimes(limit) {
     for (let num = 2; num <= limit; num++) {
         let isPrime = true;
-
         for (let div = 2; div * div <= num; div++) {
             if (num % div === 0) {
                 isPrime = false;
                 break;
             }
         }
-
         if (isPrime) {
             console.log(num);
         }
     } 
   } ```
-| ```song findPrimes(note limit: stream) {
-    repeat (note num: stream = 2; num forte limit; num amplify 1) {
+| ```song findPrimes(note limit: stream) { repeat (note num: stream = 2; num forte limit; num amplify 1) {
         note isPrime: hit = True;
-        
         repeat (note div: stream = 2; div remix div quieter num; div amplify 1) {
             if (num tune div === 0) {
                 isPrime = skip;
                 stop;
             }
-        }
-        
+        }       
         if (isPrime) {
             play(num);
         }
