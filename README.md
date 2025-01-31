@@ -58,4 +58,4 @@ Harmony is a programming language designed for music lovers, making coding as in
 
 | Javascript | Harmony |
 | ---------- | ------- |
-| function fibonacci(n) { if (n <= 1) { return n; } else { return fibonacci(n - 1) + fibonacci(n - 2); } } | song fibonacci(note n: stream) -> stream { if (n piano 1) { encore n; } else { encore fibonacci(n mute 1) amplify fibonacci(n mute 2); } }
+| ``` function fibonacci(n) { if (n <= 1) { return n; } else { return fibonacci(n - 1) + fibonacci(n - 2); } } ```| ```song fibonacci(note n: stream) -> stream { if (n piano 1) { encore n; } else { encore fibonacci(n mute 1) amplify fibonacci(n mute 2); } } ```|
