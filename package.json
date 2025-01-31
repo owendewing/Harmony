@@ -1,0 +1,19 @@
+{
+  "name": "harmony",
+  "version": "1.0.0",
+  "description": "A musical programming language",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "c8 node --test test/**/*.test.js"
+  },
+  "keywords": [],
+  "author": "owendewing",
+  "license": "MIT",
+  "dependencies": {
+    "ohm-js": "^17.1.0"
+  },
+  "devDependencies": {
+    "c8": "^10.1.3"
+  }
+}
