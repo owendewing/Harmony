@@ -15,7 +15,7 @@ Harmony is a programming language designed for music lovers, making coding as in
 
 # Data Types
 
-| Harmony             | Javascript     |
+| Data Type            | Harmony     |
 | ------------------- | -------------- |
 | boolean(True/False) | bool(hit/skip) |
 | string              | lyrics         |
@@ -24,28 +24,29 @@ Harmony is a programming language designed for music lovers, making coding as in
 
 # Data Structures
 
-| Harmony    | Javascript |
+| Data Structure    | Harmony |
 | ---------- | ---------- |
 | dictionary | playlist   |
 | array      | album      |
 
 # Variables
 
-| Harmony | Javascript |
+| Variable Declaration | Harmony |
 | ------- | ---------- |
 | let     | note       |
 | const   | chord      |
 
 # Functions
 
-| Harmony  | Javascript |
+| Functions  | Harmony |
 | -------- | ---------- |
 | function | song       |
 | return   | encore     |
+| print    | play       |
 
 # Operators
 
-| Harmony | Javascript |
+| Operators | Harmony |
 | ------- | ---------- |
 | >       | louder     |
 | <       | quieter    |
@@ -59,3 +60,35 @@ Harmony is a programming language designed for music lovers, making coding as in
 | Javascript | Harmony |
 | ---------- | ------- |
 | ``` function fibonacci(n) { if (n <= 1) { return n; } else { return fibonacci(n - 1) + fibonacci(n - 2); } } ```| ```song fibonacci(note n: stream) -> stream { if (n piano 1) { encore n; } else { encore fibonacci(n mute 1) amplify fibonacci(n mute 2); } } ```|
+| ``` function findPrimes(limit) {
+    for (let num = 2; num <= limit; num++) {
+        let isPrime = true;
+
+        for (let div = 2; div * div <= num; div++) {
+            if (num % div === 0) {
+                isPrime = false;
+                break;
+            }
+        }
+
+        if (isPrime) {
+            console.log(num);
+        }
+    } 
+  } ```
+| ```song findPrimes(note limit: stream) {
+    repeat (note num: stream = 2; num forte limit; num amplify 1) {
+        note isPrime: hit = True;
+        
+        repeat (note div: stream = 2; div remix div quieter num; div amplify 1) {
+            if (num tune div === 0) {
+                isPrime = skip;
+                stop;
+            }
+        }
+        
+        if (isPrime) {
+            play(num);
+        }
+    }
+} ``` |
