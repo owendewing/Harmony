@@ -11,7 +11,7 @@ Harmony is a programming language designed for music lovers, making coding as in
 - Static Typing
 - Object Oriented
 - Supports Functions
-- Based off of javascript
+- Based loosely off of javascript
 
 # Data Types
 
