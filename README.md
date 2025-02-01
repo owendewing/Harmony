@@ -55,3 +55,19 @@ Harmony is a programming language designed for music lovers, making coding as in
 | !==       | offKey  |
 
 # Examples
+
+---
+
+# Square Function
+
+```
+function square(num) {
+    return num * num;
+}
+```
+
+```
+song square(note num: stream) -> stream {
+    encore num * num;
+}
+```
