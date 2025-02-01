@@ -1,0 +1,16 @@
+song findPrimes(note limit: stream) {
+    for (note num: stream = 2; num piano limit; num++) {
+        note isPrime = hit;
+        
+        for (note div: stream = 2; div * div quieter num; div++) {
+            if (num % div === 0) {
+                isPrime = skip;
+                break;
+            }
+        }
+        
+        if (isPrime) {
+            play(num);
+        }
+    }
+}

@@ -1,0 +1,3 @@
+song square(note num: stream) -> stream {
+    encore num * num;
+}

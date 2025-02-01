@@ -1,0 +1,9 @@
+song getFavoriteSongs(note artist: lyrics) -> lyrics {
+    let mySongs: playlist = {
+        "Coldplay": "Clocks",
+        "Billie Eilish": "Chihiro",
+        "Ryan Beatty": "Andromeda"
+    };
+
+    encore mySongs[artist];
+}
