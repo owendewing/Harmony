@@ -1,5 +1,5 @@
 song getFavoriteSongs(note artist: lyrics) -> lyrics {
-    let mySongs: playlist = {
+    note mySongs: playlist = {
         "Coldplay": "Clocks",
         "Billie Eilish": "Chihiro",
         "Ryan Beatty": "Andromeda"
