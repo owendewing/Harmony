@@ -1,0 +1,58 @@
+Harmony {
+  Program = Stmt+
+
+  Stmt = PlayStmt |
+         VarDec   |
+         Function |
+         ReturnStmt |
+         IfStmt    |
+         WhileLoop |
+         ForLoop
+
+  PlayStmt = "play" "(" Exp ")" ";"
+
+  VarDec = "note" Identifier ":" Type ("=" Exp)? ";"
+
+  Function = "song" Identifier "(" ParamList? ")" "->" Type "{" Stmt* "}"
+
+  ReturnStmt = "encore" Exp? ";"
+
+  IfStmt = "if" "(" Exp ")" "{" Stmt* "}" ("else" "{" Stmt* "}")?
+
+  WhileLoop = "while" "(" Exp ")" "{" Stmt* "}"
+
+  ForLoop = "for" "(" (Exp | VarDec)? ";" Exp? ";" Exp? ")" "{" Stmt* "}"
+
+  ParamList = Param ("," Param)*
+
+  Param = "note" Identifier ":" Type
+
+  Type = "stream" -- Currently
+        | "lyrics" -- String
+        | "silence" -- Undefined
+        | "bool" --BoolType
+        | "hit" -- True
+        | "skip" -- False
+
+  Exp = AssignExp | SumExp | ComparisonExp
+
+  AssignExp = Identifier "=" Exp   -- AllowAssignments
+
+  SumExp = ProductExp (("+" | "-") ProductExp)*
+
+  ComparisonExp = SimpleExp (("quieter" | "louder" | "piano" | "forte") SimpleExp)
+
+  SimpleExp = StringLiteral | NumberLiteral | Identifier
+
+  ProductExp = SimpleExp (("*" | "/" | "%") SimpleExp)*
+
+  StringLiteral = "\"" (~"\"" any)* "\""  -- doubleQuote
+                | "'" (~"'" any)* "'"     -- singleQuote
+
+  NumberLiteral = digit+
+
+  Identifier = letter (letter | digit)*
+
+Operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" 
+         | "quieter" | "louder" | "piano" | "forte"
+}
