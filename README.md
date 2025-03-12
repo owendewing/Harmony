@@ -6,6 +6,8 @@ A musical programming language
 
 Harmony is a programming language designed for music lovers, making coding as intuitive as composing a song! Its syntax flows effortlessly, much like the rhythm of a melody. Instead of simply typing code, imagine playing a keyboard, and rather than writing functions, envision crafting verses of a song. With Harmony, musicians can embrace coding in a way that feels natural, turning programming into a seamless extension of their musical creativity.
 
+Visit my language website: https://owendewing.github.io/Harmony/
+
 # Features
 
 - Static Typing
