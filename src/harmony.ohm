@@ -1,58 +1,90 @@
 Harmony {
   Program = Stmt+
 
-  Stmt = PlayStmt |
-         VarDec   |
-         Function |
-         ReturnStmt |
-         IfStmt    |
-         WhileLoop |
-         ForLoop
+  Stmt = PrintStmt
+  	   | VarDec
+       | WhileStmt
+       | FuncDecl
+       | ReturnStmt
+       | ForStmt
+       | IfStmt
+       | ClassDecl
+       | var id "=" new Exp ("(" ListOf<Exp, ","> ")")? ";" --newinstance
+       | id "." id "=" Exp ";" --fieldaccess
+       | id "(" ListOf<Exp, ","> ")" ~mut ";" --call
+  
+  PrintStmt = print "(" Exp ")" ";"
+  VarDec = var id ":" Type ("=" Exp)? ";"
+  WhileStmt = while "(" Exp ")" Block
+  FuncDecl = function id "(" Params ")" "->" Type Block
+  ReturnStmt = return Exp ";" --return
+  		 | return ";" --empty
+  ForStmt = for "(" id in Exp ")" Block
+  IfStmt = if "(" Exp ")" Block else Block --else
+         | if "(" Exp ")" Block else IfStmt --elif
+         | if "(" Exp ")" Block --short
+  ClassDecl = class id "{" FieldDecl* "}"
+  FieldDecl = id ":" Type ("=" Exp)? ";"
+  
 
-  PlayStmt = "play" "(" Exp ")" ";"
+  
+  Params = var? Param ("," Param)* --multi
+       | "" --none
+  Param = id ":" Type ("=" Exp)?
+  Block = "{" Stmt+ "}"
+    
+  Type = boolean --boolean              
+       | void --void                 
+       | int --int                
+       | string --string
+       | array "[" Type "]" --array
+       
+  Exp = Exp1 relop Exp1 --condition
+  	  | Exp1
+  Exp1 = Exp1 ("+"|"-") Exp2  --add
+  	  | Exp2
+  Exp2 = Exp2 ("*"|"/"|"%") Exp3  --mul
+  	  | Exp3
+  Exp3 = Exp4 "**" Exp3   --exponent
+  	  | Exp4
+  Exp4 = id "(" ListOf<Exp, ","> ")" --call
+      | id --id
+  	 | num
+      | true
+      | false
+      | stringlit ~mut
+      | "[" ListOf<Exp, ","> "]" ~mut --arrayexp
+  
+  keywords = print | var | boolean | void | int | string | id | true | false
+  | while | function | return | array | for | in | if | else | new | class
+  
+  print = "play" ~idchar
+  var = "note" ~idchar
+  boolean = "bool" ~idchar
+  void = "mute" ~idchar
+  int = "stream" ~idchar
+  string = "lyrics" ~idchar
+  true = "hit" ~idchar
+  false = "skip" ~idchar
+  while = "while" ~idchar
+  for = "for" ~idchar
+  function = "song" ~idchar
+  return = "encore" ~idchar
+  array = "album" ~idchar
+  in = "in" ~idchar
+  if = "if" ~idchar
+  else = "else" ~idchar
+  class = "composition" ~idchar
+  new = "debut" ~idchar
+  
+  num = digit+
+  id = ~keywords letter idchar*
+  idchar = alnum | "_"
+  mut = ~"==" "=" | "++" | "--"
+  relop = "<="|"<"|"=="|"!="|">="|">"
+  stringlit = "\"" char* "\""
+  char = "\\u{" hexDigit+ "}"   --codepoint
+       | "\\" any               --nonbackslash
+       | ~"\"" any
 
-  VarDec = "note" Identifier ":" Type ("=" Exp)? ";"
-
-  Function = "song" Identifier "(" ParamList? ")" "->" Type "{" Stmt* "}"
-
-  ReturnStmt = "encore" Exp? ";"
-
-  IfStmt = "if" "(" Exp ")" "{" Stmt* "}" ("else" "{" Stmt* "}")?
-
-  WhileLoop = "while" "(" Exp ")" "{" Stmt* "}"
-
-  ForLoop = "for" "(" (Exp | VarDec)? ";" Exp? ";" Exp? ")" "{" Stmt* "}"
-
-  ParamList = Param ("," Param)*
-
-  Param = "note" Identifier ":" Type
-
-  Type = "stream" -- Currently
-        | "lyrics" -- String
-        | "silence" -- Undefined
-        | "bool" --BoolType
-        | "hit" -- True
-        | "skip" -- False
-
-  Exp = AssignExp | SumExp | ComparisonExp
-
-  AssignExp = Identifier "=" Exp   -- AllowAssignments
-
-  SumExp = ProductExp (("+" | "-") ProductExp)*
-
-  ComparisonExp = SimpleExp (("quieter" | "louder" | "piano" | "forte") SimpleExp)
-
-  SimpleExp = StringLiteral | NumberLiteral | Identifier
-
-  ProductExp = SimpleExp (("*" | "/" | "%") SimpleExp)*
-
-  StringLiteral = "\"" (~"\"" any)* "\""  -- doubleQuote
-                | "'" (~"'" any)* "'"     -- singleQuote
-
-  NumberLiteral = digit+
-
-  Identifier = letter (letter | digit)*
-
-Operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" 
-         | "quieter" | "louder" | "piano" | "forte"
-}
+  }

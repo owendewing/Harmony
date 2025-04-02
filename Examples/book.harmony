@@ -1,11 +1,7 @@
 composition Book {
-    note title: lyrics;
-    note author: lyrics;
-
-    song bookInfo() -> lyrics {
-        encore "Title: " + this.composition.title + ", Author: " + this.composition.author;
-    }
+    title: lyrics;
+    author: lyrics;
 }
 
-note myBook: Book = Book("1984", "George Orwell");
-play(myBook.bookInfo());
+note myBook = debut Book;
+myBook.title = "1984";

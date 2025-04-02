@@ -5,25 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harmony</title>
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
-    <header>
-        <h1>Harmony</h1>
-        <p class="subtitle">A musical programming language</p>
+    <header class="header">
     </header>
     
     <section id="about">
         <h2>About Harmony</h2>
+        <p>Harmony is a programming language designed for music lovers, making coding as intuitive as composing a song! 
+            Its syntax flows effortlessly, much like the rhythm of a melody. Instead of simply typing code, imagine playing a keyboard,
+             and rather than writing functions, envision crafting verses of a song. With Harmony, musicians can embrace coding in a way
+              that feels natural, turning programming into a seamless extension of their musical creativity.</p>
     </section>
     
     <section id="examples">
         <h2>Language Examples</h2>
         
         <div class="example">
-            <h3>Example 1</h3>
+            <h3>Square Function</h3>
             <pre><code>
+    song square(note num: stream) -> stream {
+        encore num * num;
+    }
             </code></pre>
-            <p>Explanation of what this example demonstrates.</p>
+        </div>
+        <div class="example">
+            <h3>Fibonacci Function</h3>
+            <pre><code>
+    song fibonacci(note n: stream) -> stream {
+        if (n < 1) {
+            encore n;
+        } else {
+            encore fibonacci(n - 1) + fibonacci(n - 2);
+        }
+    }
+            </code></pre>
+        </div>
+        <div class="example">
+            <h3>Even Numbers Function</h3>
+            <pre><code>
+    note musicList: album[stream] = [1, 2, 3, 4, 5];
+
+    song numIsEven() -> bool {
+        for (num in musicList) {
+            if (num % 2 == 0) {
+                encore hit;
+            } else {
+                encore skip;
+            }
+        }
+    }
+            </code></pre>
+        </div>
+        <div class="example">
+            <h3>If Statements</h3>
+            <pre><code>
+    note number: stream = 0;
+
+    if (number > 0) {
+        play("positive number");
+    } else if (number == 0) {
+        play("number is zero");
+    } else {
+        play("number is negative");
+    }
+            </code></pre>
+        </div>
+        <div class="example">
+            <h3>Book Class</h3>
+            <pre><code>
+    composition Book {
+        title: lyrics;
+        author: lyrics;
+    }
+    
+    note myBook = debut Book;
+    myBook.title = "1984";                
+            </code></pre>
         </div>
     </section>
     
@@ -32,13 +91,19 @@
         
         <div class="developer">
             <div class="developer-info">
-                <h3>Owen Dewing</h3>
+                <div>
+                    <h3>Owen Dewing</h3>
+                    <p>I am a senior student at Loyola Marymount University with a Computer Science
+                        major and a Data Science minor. I am from Dayton, Ohio.
+                    </p>
+                </div>
+                <img src="docs/profile.png" alt="developer photo">
             </div>
         </div>
         
     </section>
     
-    <footer>
+    <footer id="viewCompiler">
         <p>
             <a href="https://github.com/owendewing/Harmony">View the compiler on GitHub</a>
         </p>

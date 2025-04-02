@@ -1,9 +1,0 @@
-song getFavoriteSongs(note artist: lyrics) -> lyrics {
-    note mySongs: playlist = {
-        "Coldplay": "Clocks",
-        "Billie Eilish": "Chihiro",
-        "Ryan Beatty": "Andromeda"
-    };
-
-    encore mySongs[artist];
-}

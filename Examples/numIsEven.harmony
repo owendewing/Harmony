@@ -1,0 +1,11 @@
+note musicList: album[stream] = [1, 2, 3, 4, 5];
+
+song numIsEven() -> bool {
+    for (num in musicList) {
+        if (num % 2 == 0) {
+            encore hit;
+        } else {
+            encore skip;
+        }
+    }
+}

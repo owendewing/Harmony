@@ -21,6 +21,15 @@ export function variable(name, type) {
   };
 }
 
+export function functionCall(callee, args) {
+  return {
+    kind: "FunctionCall",
+    callee,
+    args,
+    type: callee.returnType,
+  };
+}
+
 export function functionDeclaration(fun) {
   return {
     kind: "FunctionDeclaration",
@@ -35,6 +44,11 @@ export function fun(name, parameters, returnType, body) {
     parameters,
     returnType,
     body,
+    type: {
+      kind: "FunctionType",
+      paramTypes: parameters.map((p) => p.type),
+      returnType: returnType,
+    },
   };
 }
 
@@ -46,27 +60,18 @@ export function functionType(parameters, returnType) {
   };
 }
 
-export function arrayType(elementType) {
+export function arrayType(baseType) {
   return {
     kind: "ArrayType",
-    elementType,
+    baseType,
   };
 }
 
-export function arrayExpression(elements) {
+export function arrayExpression(elements, type = null) {
   return {
     kind: "ArrayExpression",
     elements,
-    type: arrayType(elements[0].type),
-  };
-}
-
-export function unary(op, operand, type) {
-  return {
-    kind: "UnaryExpression",
-    op,
-    operand,
-    type,
+    type: type || arrayType(elements[0].type),
   };
 }
 
@@ -77,15 +82,6 @@ export function binary(op, left, right, type) {
     left,
     right,
     type,
-  };
-}
-
-export function functionCall(callee, args) {
-  return {
-    kind: "FunctionCall",
-    callee,
-    args,
-    type: callee.type.returnType,
   };
 }
 
@@ -115,16 +111,6 @@ export function forStatement(iterator, collection, body) {
   };
 }
 
-export function conditionalExpression(test, consequent, alternate, type) {
-  return {
-    kind: "ConditionalExpression",
-    test,
-    consequent,
-    alternate,
-    type,
-  };
-}
-
 export function returnStatement(argument) {
   return {
     kind: "ReturnStatement",
@@ -147,11 +133,38 @@ export function classType(name, fields) {
   };
 }
 
-export function assignment(target, source) {
+export function newInstance(classType, fields) {
   return {
-    kind: "Assignment",
-    target,
-    source,
+    kind: "NewInstance",
+    classType,
+    fields,
+    type: classType,
+  };
+}
+
+export function fieldAccess(classInstance, field, value) {
+  return {
+    kind: "FieldAccess",
+    classInstance,
+    field,
+    value,
+    type: field.type,
+  };
+}
+
+export function numberLiteral(value) {
+  return {
+    kind: "NumberLiteral",
+    value,
+    type: intType,
+  };
+}
+
+export function stringLiteral(value) {
+  return {
+    kind: "StringLiteral",
+    value,
+    type: stringType,
   };
 }
 

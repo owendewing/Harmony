@@ -9,16 +9,22 @@ const syntaxChecks = [
   ["print statement", 'play ("hello world");'],
   [
     "function declaration",
-    "song getFavoriteSongs(note artist: lyrics) -> lyrics {}",
+    "song getFavoriteSongs(a: stream) -> lyrics {play(3);}",
   ],
-  ["function declaration with no parameters", "song emptySong() -> lyrics {}"],
+  [
+    "function declaration with multiple parameters",
+    "song getFavoriteSongs(a: stream, b: stream) -> lyrics {play(3);}",
+  ],
   ["multiple statements", "note a: stream = 5; play (a);"],
-  ["for loop", "for (i = 0; i quieter 10; i = i + 1) {}"],
+  ["for loop", "for (key in array) {play(3);}"],
   ["return statement with expression", "encore 5;"],
-  ["return statement without expression", "encore;"],
-  ["if statement", "if (a quieter 10) { play (a); }"],
-  ["if-else statement", "if (a quieter 10) { play (a); } else { encore; }"],
-  ["while loop", "while (i louder 100) { note j: stream = 3;}"],
+  ["if statement", "if (hello < 4) {play(3);}"],
+  ["if-else statement", "if (hello < 4) {play(3);} else {play(4);}"],
+  [
+    "if-else-if statement",
+    "if (hello < 4) {play(3);} else if (hello > 5) {play(4);} else {play(3);}",
+  ],
+  ["while loop", "while (i < 100) { note j: stream = 3;}"],
 ];
 
 // Programs with syntax errors that the parser will detect
@@ -43,8 +49,8 @@ const syntaxErrors = [
     "song getFavoriteSongs(note artist: lyrics) -> lyrics",
     /Line 1, col 53:/,
   ],
-  ["invalide for loop", "for (i = 0; i quieter 10) {}", /Line 1, col 25:/],
-  ["invalid while loop", "while (i louder 100) {", /Line 1, col 23:/],
+  ["invalide for loop", "for (i = 0; i quieter 10) {}", /Line 1, col 8:/],
+  ["invalid while loop", "while (i louder 100) {", /Line 1, col 10:/],
 ];
 
 describe("The parser", () => {
