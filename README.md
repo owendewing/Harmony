@@ -45,16 +45,16 @@ Visit my language website: https://owendewing.github.io/Harmony/
 | return    | encore  |
 | print     | play    |
 
-# Operators
+# Semantic Errors
 
-| Operators | Harmony |
-| --------- | ------- |
-| >         | louder  |
-| <         | quieter |
-| >=        | forte   |
-| <=        | piano   |
-| ===       | inTune  |
-| !==       | offKey  |
+- Incompatible Types
+- Return can only appear inside a function
+- Not declared
+- Expected a function
+- Expected a class
+- Expected a number
+- Expected a boolean
+- Expected a string
 
 # Examples
 
