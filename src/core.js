@@ -52,10 +52,10 @@ export function fun(name, parameters, returnType, body) {
   };
 }
 
-export function functionType(parameters, returnType) {
+export function functionType(paramTypes, returnType) {
   return {
     kind: "FunctionType",
-    parameters,
+    paramTypes,
     returnType,
   };
 }

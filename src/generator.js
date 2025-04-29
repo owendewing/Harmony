@@ -1,3 +1,115 @@
-export default function generate() {
-  throw new Error("Not yet implemented");
+// The code generator exports a single function, generate(program), which
+// accepts a program representation and returns the JavaScript translation
+// as a string.
+
+// import { voidType, standardLibrary } from "./core.js"
+
+export default function generate(program) {
+  // When generating code for statements, we'll accumulate the lines of
+  // the target code here. When we finish generating, we'll join the lines
+  // with newlines and return the result.
+  const output = [];
+
+  // Variable and function names in JS will be suffixed with _1, _2, _3,
+  // etc. This is because "switch", for example, is a legal name in Carlos,
+  // but not in JS. So, the Carlos variable "switch" must become something
+  // like "switch_1". We handle this by mapping each name to its suffix.
+  const targetName = ((mapping) => {
+    return (entity) => {
+      const name = entity.name;
+      if (!mapping.has(name)) {
+        mapping.set(name, mapping.size + 1);
+      }
+      return `${name}_${mapping.get(name)}`;
+    };
+  })(new Map());
+
+  const gen = (node) => generators?.[node?.kind]?.(node) ?? node;
+
+  const generators = {
+    // Key idea: when generating an expression, just return the JS string; when
+    // generating a statement, write lines of translated JS to the output array.
+    Program(p) {
+      p.statements.forEach(gen);
+    },
+    VariableDeclaration(d) {
+      console.log("GEN INITIALIZER", d.initializer);
+      output.push(`let ${gen(d.name)} = ${gen(d.initializer)};`);
+    },
+    FunctionDeclaration(d) {
+      output.push(
+        `function ${gen(d.fun)}(${d.fun.parameters.map(gen).join(", ")}) {`
+      );
+      d.fun.body.forEach(gen);
+      output.push("}");
+    },
+    Variable(v) {
+      return targetName(v);
+    },
+    Function(f) {
+      return targetName(f);
+    },
+    // Increment(s) {
+    //   output.push(`${gen(s.variable)}++;`);
+    // },
+    // Decrement(s) {
+    //   output.push(`${gen(s.variable)}--;`);
+    // },
+    // Assignment(s) {
+    //   output.push(`${gen(s.target)} = ${gen(s.source)};`);
+    // },
+    // BreakStatement(s) {
+    //   output.push("break;");
+    // },
+    ReturnStatement(s) {
+      output.push(`return ${gen(s.argument)};`);
+    },
+    IfStatement(s) {
+      output.push(`if (${gen(s.test)}) {`);
+      s.consequent.forEach(gen);
+      if (s.alternate === null) {
+        output.push("}");
+      } else if (s.alternate.kind?.endsWith?.("IfStatement")) {
+        output.push("} else");
+        gen(s.alternate);
+      } else {
+        output.push("} else {");
+        s.alternate.forEach(gen);
+        output.push("}");
+      }
+    },
+
+    WhileStatement(s) {
+      output.push(`while (${gen(s.test)}) {`);
+      s.body.forEach(gen);
+      output.push("}");
+    },
+    ForStatement(s) {
+      output.push(`for (let ${gen(s.iterator)} of ${gen(s.collection)}) {`);
+      s.body.forEach(gen);
+      output.push("}");
+    },
+    BinaryExpression(e) {
+      const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op;
+      return `(${gen(e.left)} ${op} ${gen(e.right)})`;
+    },
+    ArrayExpression(e) {
+      return `[${e.elements.map(gen).join(",")}]`;
+    },
+    FunctionCall(c) {
+      return `${gen(c.callee)}(${c.args.map(gen).join(", ")})`;
+    },
+    PrintStatement(s) {
+      output.push(`console.log(${gen(s.expression)});`);
+    },
+    NumberLiteral(e) {
+      return e.value.toString();
+    },
+    StringLiteral(e) {
+      return JSON.stringify(e.value);
+    },
+  };
+
+  gen(program);
+  return output.join("\n");
 }

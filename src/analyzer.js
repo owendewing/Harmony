@@ -139,13 +139,21 @@ export default function analyze(match) {
     },
 
     VarDec(_var, id, _colon, type, eq, exp, _semi) {
-      const initializer = exp.rep();
-      const variable = core.variable(id.sourceString, type.rep());
+      let initializer = null;
       if (eq && exp) {
-        variable.defaultValue = exp.rep();
+        initializer = exp.rep();
+        if (Array.isArray(initializer)) {
+          initializer = initializer[0];
+        }
+      }
+      const variable = core.variable(id.sourceString, type.rep());
+      if (initializer !== null) {
+        variable.defaultValue = initializer;
       }
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
-      mustAllHaveTheSameType([variable, ...variable.defaultValue], { at: id });
+      if (initializer !== null) {
+        mustBeAssignable(initializer, { toType: variable.type }, { at: id });
+      }
       context.add(id.sourceString, variable);
       return core.variableDeclaration(variable, initializer);
     },
@@ -214,9 +222,8 @@ export default function analyze(match) {
 
     FuncDecl(_func, id, _open, params, _close, _arrow, returnType, block) {
       const parameters = params.children
-        ? params.children.map((p) => p.rep())
+        ? params.children.map((p) => p.rep()).flat()
         : [];
-
       const paramTypes = parameters.map((p) => p.type);
 
       const fun = core.fun(id.sourceString, parameters, returnType.rep(), []);
@@ -242,8 +249,9 @@ export default function analyze(match) {
     },
 
     Params_multi(_var, first, _comma, rest) {
-      return [first.rep(), ...rest.children.map((r) => r.rep())];
+      return [first.rep(), ...rest.children.map((r) => r.rep())].flat();
     },
+
     Params_none(_) {
       return [];
     },
@@ -394,8 +402,9 @@ export default function analyze(match) {
     Exp4_id(id) {
       const entity = context.lookup(id.sourceString);
       mustHaveBeenFound(entity, id.sourceString, { at: id });
-      return entity;
+      return core.variable(id.sourceString, entity.type);
     },
+
     true(_) {
       return true;
     },

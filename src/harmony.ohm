@@ -26,8 +26,6 @@ Harmony {
   ClassDecl = class id "{" FieldDecl* "}"
   FieldDecl = id ":" Type ("=" Exp)? ";"
   
-
-  
   Params = var? Param ("," Param)* --multi
        | "" --none
   Param = id ":" Type ("=" Exp)?
