@@ -1,5 +1,5 @@
 song fibonacci(note n: stream) -> stream {
-    if (n < 1) {
+    if (n <= 1) {
         encore n;
     } else {
         encore fibonacci(n - 1) + fibonacci(n - 2);
