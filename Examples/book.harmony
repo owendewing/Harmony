@@ -4,4 +4,4 @@ composition Book {
 }
 
 note myBook = debut Book;
-myBook.title = "1984";
+myBook.title = "Hello World";
