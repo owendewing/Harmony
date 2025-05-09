@@ -375,6 +375,19 @@ export default function analyze(match) {
       return core.binary("**", l, r, core.intType);
     },
 
+    Exp3_unary(unaryOp, exp) {
+      const [op, operand] = [unaryOp.sourceString, exp.rep()];
+      let type;
+      if (op === "-") {
+        mustHaveNumericType(operand, { at: exp });
+        type = operand.type;
+      } else if (op === "!") {
+        mustHaveBooleanType(operand, { at: exp });
+        type = core.booleanType;
+      }
+      return core.unary(op, operand, type);
+    },
+
     Exp4_arrayexp(_open, expList, _close) {
       const elements = expList.asIteration().children.map((e) => e.rep());
       mustAllHaveTheSameType(elements, { at: _open });

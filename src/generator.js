@@ -24,16 +24,15 @@ export default function generate(program) {
     };
   })(new Map());
 
+  program = JSON.parse(JSON.stringify(program));
+
   const gen = (node) => generators?.[node?.kind]?.(node) ?? node;
 
   const generators = {
-    // Key idea: when generating an expression, just return the JS string; when
-    // generating a statement, write lines of translated JS to the output array.
     Program(p) {
       p.statements.forEach(gen);
     },
     VariableDeclaration(d) {
-      console.log("GEN INITIALIZER", d.initializer);
       output.push(`let ${gen(d.name)} = ${gen(d.initializer)};`);
     },
     FunctionDeclaration(d) {
@@ -49,18 +48,6 @@ export default function generate(program) {
     Function(f) {
       return targetName(f);
     },
-    // Increment(s) {
-    //   output.push(`${gen(s.variable)}++;`);
-    // },
-    // Decrement(s) {
-    //   output.push(`${gen(s.variable)}--;`);
-    // },
-    // Assignment(s) {
-    //   output.push(`${gen(s.target)} = ${gen(s.source)};`);
-    // },
-    // BreakStatement(s) {
-    //   output.push("break;");
-    // },
     ReturnStatement(s) {
       output.push(`return ${gen(s.argument)};`);
     },
@@ -101,9 +88,6 @@ export default function generate(program) {
     },
     PrintStatement(s) {
       output.push(`console.log(${gen(s.expression)});`);
-    },
-    NumberLiteral(e) {
-      return e.value.toString();
     },
     StringLiteral(e) {
       return JSON.stringify(e.value);

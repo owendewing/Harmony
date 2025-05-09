@@ -18,7 +18,7 @@ const fixtures = [
             note z: lyrics = "hello";
             `,
     expected: dedent`
-            let x_1 = (3 * 7);
+            let x_1 = 21;
             let y_2 = true;
             let z_3 = "hello";
             `,
@@ -119,12 +119,95 @@ const fixtures = [
                 console.log(3);
               }
               for (let keykey_3 of musicList_1) {
-                if ((3 < 4)) {
-                  console.log(3);
-                }
+                console.log(3);
               }
-              `,
+  `,
   },
+  {
+    name: "function call with number literal",
+    source: `
+      song square(x: stream) -> stream {
+        encore x * x;
+      }
+      note y: stream = square(7);
+    `,
+    expected: dedent`
+      function square_1(x_2) {
+        return (x_2 * x_2);
+      }
+      let y_3 = square_1(7);
+    `,
+  },
+  {
+    name: "print number literal",
+    source: `
+      play(42);
+    `,
+    expected: dedent`
+      console.log(42);
+    `,
+  },
+  // {
+  //   name: "class with optimized fields",
+  //   source: `
+  //     composition Point {
+  //       x: stream;
+  //       y: stream;
+  //     }
+  //     note p: Point = debut Point(1+2, 3*4);
+  //     p.x = 5+6;
+  //   `,
+  //   expected: dedent`
+  //     class Point_1 {
+  //       constructor(x_2, y_3) {
+  //         this.x_2 = x_2;
+  //         this.y_3 = y_3;
+  //       }
+  //     }
+  //     let p_4 = new Point_1(3, 12);
+  //     p_4.x_2 = 11;
+  //   `,
+  // },
+  // {
+  //   name: "class instances",
+  //   source: `
+  //     composition Person {
+  //       age: stream;
+  //     }
+  //     note p: Person = debut Person(20 + 5);
+  //     p.age = 30;
+  //   `,
+  //   expected: dedent`
+  //     class Person_1 {
+  //       constructor(age_2) {
+  //         this.age_2 = age_2;
+  //       }
+  //     }
+  //     let p_3 = new Person_1(25);
+  //     p_3.age_2 = 30;
+  //   `,
+  // },
+  // {
+  //   name: "field access",
+  //   source: `
+  //     composition Point {
+  //       x: stream;
+  //       y: stream;
+  //     }
+  //     note p: Point = debut Point(1, 2);
+  //     play(p.x);
+  //   `,
+  //   expected: dedent`
+  //     class Point_1 {
+  //       constructor(x_2, y_3) {
+  //         this.x_2 = x_2;
+  //         this.y_3 = y_3;
+  //       }
+  //     }
+  //     let p_4 = new Point_1(1,2);
+  //     console.log(p_4.x_2);
+  //   `,
+  // },
 ];
 describe("The code generator", () => {
   for (const fixture of fixtures) {

@@ -71,7 +71,10 @@ export function arrayExpression(elements, type = null) {
   return {
     kind: "ArrayExpression",
     elements,
-    type: type || arrayType(elements[0].type),
+    type:
+      type || elements.length > 0
+        ? arrayType(elements[0].type)
+        : arrayType(anyType),
   };
 }
 
@@ -83,6 +86,10 @@ export function binary(op, left, right, type) {
     right,
     type,
   };
+}
+
+export function unary(op, operand, type) {
+  return { kind: "UnaryExpression", op, operand, type };
 }
 
 export function ifStatement(test, consequent, alternate) {

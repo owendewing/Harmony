@@ -77,9 +77,11 @@ const semanticChecks = [
     "fibonacci function",
     "song fibonacci(note n: stream) -> stream {if (n < 1) {encore n;} else {encore fibonacci(n - 1) + fibonacci(n - 2);}}",
   ],
+  ["unary negation", "play(-5);"],
+  ["unary not", "play(!hit);"],
 ];
 const semanticErrors = [
-  ["bad types for +", "note a: stream = 5 + hit;", /Incompatible types/],
+  [("bad types for +", "note a: stream = 5 + hit;", /Incompatible types/)],
   ["bad types for -", "note b: lyrics = 4 - skip;", /Incompatible types/],
   ["bad types for *", "note c: stream = 5 * skip;", /Expected a number/],
   ["bad types for /", "note c: stream = 5 / skip;", /Expected a number/],

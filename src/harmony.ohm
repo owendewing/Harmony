@@ -45,6 +45,7 @@ Harmony {
   	  | Exp3
   Exp3 = Exp4 "**" Exp3   --exponent
   	  | Exp4
+       | ("-" | "!") Exp4 --unary
   Exp4 = id "(" ListOf<Exp, ","> ")" --call
       | id --id
   	 | num
@@ -72,8 +73,8 @@ Harmony {
   in = "in" ~idchar
   if = "if" ~idchar
   else = "else" ~idchar
-  class = "composition" ~idchar
-  new = "debut" ~idchar
+  class = "composition" | "class" ~idchar
+  new = "debut" | "new" ~idchar
   
   num = digit+
   id = ~keywords letter idchar*
