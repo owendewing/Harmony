@@ -101,6 +101,26 @@ const tests = [
       [5, -5]
     ),
   ],
+  [
+    "returns node unchanged when no optimizer exists for kind",
+    { kind: "UnknownKind" },
+    { kind: "UnknownKind" },
+  ],
+  [
+    "skips re-optimizing an already seen node",
+    (() => {
+      const node = core.binary("+", 1, 2, core.intType);
+      node.left = node;
+      node.right = node;
+      return node;
+    })(),
+    (() => {
+      const node = core.binary("+", 1, 2, core.intType);
+      node.left = node;
+      node.right = node;
+      return node;
+    })(),
+  ],
 ];
 
 describe("The optimizer", () => {
@@ -108,21 +128,11 @@ describe("The optimizer", () => {
     it(`${scenario}`, () => {
       assert.deepEqual(optimize(before), after);
     });
-    it("does not re-optimize a node that's already being optimized", () => {
-      const cyclic = core.binary("+", 1, 2, core.intType);
-      cyclic.left = cyclic;
-      cyclic.right = cyclic;
-      const result = optimize(cyclic);
-      assert.strictEqual(result, cyclic);
-    });
-    it("ensureNumber handles NumberLiteral", () => {
-      const result = ensureNumber({ kind: "NumberLiteral", value: "42" });
-      assert.strictEqual(result, 42);
-    });
-    it("returns node unchanged when no optimizer exists for kind", () => {
-      const node = { kind: "UnknownKind" };
-      const result = optimize(node);
-      assert.strictEqual(result, node);
-    });
   }
+});
+describe("The ensureNumber helper", () => {
+  it("returns the number value for a NumberLiteral node", () => {
+    const node = { kind: "NumberLiteral", value: "42" };
+    assert.strictEqual(ensureNumber(node), 42);
+  });
 });
