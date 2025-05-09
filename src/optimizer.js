@@ -1,7 +1,19 @@
 import * as core from "./core.js";
 
+const optimizingNodes = new WeakSet();
+
 export default function optimize(node) {
-  return optimizers?.[node.kind]?.(node) ?? node;
+  if (node === null || node === undefined || typeof node !== "object") {
+    return node;
+  }
+
+  if (optimizingNodes.has(node)) {
+    return node;
+  }
+  optimizingNodes.add(node);
+  let result = optimizers?.[node.kind]?.(node) ?? node;
+  optimizingNodes.delete(node);
+  return result;
 }
 
 const isZero = (n) =>
@@ -9,7 +21,7 @@ const isZero = (n) =>
 const isOne = (n) =>
   n === 1 || (n?.constructor === Number && n.valueOf() === 1);
 
-const ensureNumber = (value) => {
+export function ensureNumber(value) {
   if (value?.constructor === Number) {
     return value.valueOf();
   }
@@ -17,7 +29,7 @@ const ensureNumber = (value) => {
     return Number(value.value);
   }
   return value;
-};
+}
 
 const optimizers = {
   Program(p) {

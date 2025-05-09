@@ -93,16 +93,17 @@ export default function analyze(match) {
   }
 
   function typeDescription(type) {
-    if (typeof type === "string") return type;
-    if (type.kind == "StructType") return type.name;
-    if (type.kind == "FunctionType") {
+    if (type.kind === "FunctionType") {
       return `(${type.paramTypes
         .map(typeDescription)
         .join(", ")}) -> ${typeDescription(type.returnType)}`;
     }
     if (type.kind == "ArrayType") return `[${typeDescription(type.baseType)}]`;
-    if (type.kind == "OptionalType")
-      return `${typeDescription(type.baseType)}?`;
+    if (type.kind == "IntType") return "stream";
+    if (type.kind == "BooleanType") return "bool";
+    if (type.kind == "StringType") return "lyrics";
+    if (type.kind == "VoidType") return "mute";
+    return type.kind;
   }
 
   function mustBeAssignable(e, { toType: type }, at) {
@@ -226,11 +227,16 @@ export default function analyze(match) {
         : [];
       const paramTypes = parameters.map((p) => p.type);
 
-      const fun = core.fun(id.sourceString, parameters, returnType.rep(), []);
-      fun.type = core.functionType(paramTypes, returnType.rep());
+      const returnT = returnType.rep();
+      const type = core.functionType(paramTypes, returnT);
+      const fun = core.fun(id.sourceString, parameters, returnT, []);
+      fun.type = type;
+
+      const decl = core.functionDeclaration(fun);
+      decl.type = type;
 
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
-      context.add(id.sourceString, core.functionDeclaration(fun));
+      context.add(id.sourceString, decl);
 
       const functionContext = context.newChildContext({ function: fun });
       const savedContext = context;
@@ -248,12 +254,11 @@ export default function analyze(match) {
       return core.functionDeclaration(fun);
     },
 
-    Params_multi(_var, first, _comma, rest) {
-      return [first.rep(), ...rest.children.map((r) => r.rep())].flat();
-    },
-
     Params_none(_) {
       return [];
+    },
+    Params_multi(_var, first, _comma, rest) {
+      return [first.rep(), ...rest.children.map((r) => r.rep())].flat();
     },
 
     Param(_id, _colon, type, eq, exp) {
@@ -285,7 +290,7 @@ export default function analyze(match) {
       const array = exp.rep();
       mustHaveAnArrayType(array, { at: exp });
 
-      const elementType = array.type.baseType || array.type.elementType;
+      const elementType = array.type.baseType;
       const variable = core.variable(id.sourceString, elementType);
 
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
@@ -415,6 +420,11 @@ export default function analyze(match) {
     Exp4_id(id) {
       const entity = context.lookup(id.sourceString);
       mustHaveBeenFound(entity, id.sourceString, { at: id });
+
+      if (entity.kind === "FunctionDeclaration") {
+        return entity;
+      }
+
       return core.variable(id.sourceString, entity.type);
     },
 

@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import optimize from "../src/optimizer.js";
 import * as core from "../src/core.js";
+import { ensureNumber } from "../src/optimizer.js";
 
 const x = core.variable("x", core.intType);
 const a = core.variable("a", core.arrayType(core.intType));
@@ -40,8 +41,10 @@ const tests = [
     core.unary("-", x),
     core.unary("-", x),
   ],
+  ["optimizes 0 + x", core.binary("+", 0, x, core.intType), x],
   ["optimizes 1**", core.binary("**", 1, x), 1],
   ["optimizes **0", core.binary("**", x, 0), 1],
+  ["folds %", core.binary("%", 10, 3, core.intType), 1],
   [
     "optimizes if-true",
     core.ifStatement(true, [core.printStatement(x)], []),
@@ -51,6 +54,11 @@ const tests = [
     "optimizes if-false",
     core.ifStatement(false, [], [core.printStatement(x)]),
     [core.printStatement(x)],
+  ],
+  [
+    "if-false with no alternate returns []",
+    core.ifStatement(false, [core.printStatement(x)], null),
+    [],
   ],
   [
     "optimizes while-false",
@@ -99,6 +107,22 @@ describe("The optimizer", () => {
   for (const [scenario, before, after] of tests) {
     it(`${scenario}`, () => {
       assert.deepEqual(optimize(before), after);
+    });
+    it("does not re-optimize a node that's already being optimized", () => {
+      const cyclic = core.binary("+", 1, 2, core.intType);
+      cyclic.left = cyclic;
+      cyclic.right = cyclic;
+      const result = optimize(cyclic);
+      assert.strictEqual(result, cyclic);
+    });
+    it("ensureNumber handles NumberLiteral", () => {
+      const result = ensureNumber({ kind: "NumberLiteral", value: "42" });
+      assert.strictEqual(result, 42);
+    });
+    it("returns node unchanged when no optimizer exists for kind", () => {
+      const node = { kind: "UnknownKind" };
+      const result = optimize(node);
+      assert.strictEqual(result, node);
     });
   }
 });

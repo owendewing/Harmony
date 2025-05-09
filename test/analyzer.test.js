@@ -5,7 +5,6 @@ import analyze from "../src/analyzer.js";
 
 const semanticChecks = [
   ["variable declaration", "note a: stream = 5;"],
-  // ["variable declaration without initialization", "note b: stream;"],
   ["print boolean literal", "play (hit);"],
   ["print int literal", "play (5);"],
   ["print string literal", 'play ("hello world");'],
@@ -20,6 +19,11 @@ const semanticChecks = [
     "initialize string array",
     'note musicList: album[lyrics] = ["a", "b", "c"];',
   ],
+  [
+    "assign void to variable explicitly",
+    "song voidFn() -> mute { encore; } note result: mute = voidFn();",
+  ],
+
   [
     "for loop",
     "note musicList: album[stream] = [1, 2, 3]; for (key in musicList) {play(3);}",
@@ -79,9 +83,40 @@ const semanticChecks = [
   ],
   ["unary negation", "play(-5);"],
   ["unary not", "play(!hit);"],
+  [
+    "function call as statement",
+    "song printNumber(note n: stream) -> mute { play(n); } printNumber(5);",
+  ],
+  [
+    "for loop with array type",
+    "note nums: album[stream] = [1,2,3]; for (n in nums) { play(n); }",
+  ],
+  [
+    "function with truly empty parameters (no spaces)",
+    "song empty() -> stream { encore 5; } play(empty());",
+  ],
 ];
 const semanticErrors = [
-  [("bad types for +", "note a: stream = 5 + hit;", /Incompatible types/)],
+  [
+    "call non-function as function",
+    "note x: stream = 5; play(x());",
+    /Expected a function/,
+  ],
+  [
+    "assign to undefined specialized type",
+    `
+    composition Weird {}
+    note weird = debut Weird;
+    note x: stream = weird;
+    `,
+    /Cannot assign a ClassType to a stream/,
+  ],
+  [
+    "assign function to int variable",
+    "song getNumber() -> stream { encore 5; } note a: stream = getNumber;",
+    /Cannot assign a \(.*\) -> .* to a stream/,
+  ],
+  ["bad types for +", "note a: stream = 5 + hit;", /Incompatible types/],
   ["bad types for -", "note b: lyrics = 4 - skip;", /Incompatible types/],
   ["bad types for *", "note c: stream = 5 * skip;", /Expected a number/],
   ["bad types for /", "note c: stream = 5 / skip;", /Expected a number/],
@@ -96,11 +131,6 @@ const semanticErrors = [
     "note track = debut 5;",
     /not declared/,
   ],
-  // [
-  //   "field access on non-class",
-  //   "note a: stream; a.releasedate = 3;",
-  //   /Expected a class/,
-  // ],
   [
     "return statement not in function",
     "encore 5;",
@@ -109,23 +139,27 @@ const semanticErrors = [
   [
     "assign string to int variable",
     'note a: stream = "hello";',
-    /Cannot assign a undefined to a undefined/,
+    /Cannot assign a lyrics to a stream/,
   ],
+
   [
     "assign int to string variable",
     "note a: lyrics = 5;",
-    /Cannot assign a undefined to a undefined/,
+    /Cannot assign a stream to a lyrics/,
   ],
+
   [
     "assign boolean to int variable",
     "note a: stream = hit;",
-    /Cannot assign a undefined to a undefined/,
+    /Cannot assign a bool to a stream/,
   ],
+
   [
     "assign int to boolean variable",
     "note a: bool = 5;",
-    /Cannot assign a undefined to a undefined/,
+    /Cannot assign a stream to a bool/,
   ],
+
   [("if condition not boolean", "if (5) { play(3); }", /Incompatible types/)],
   [
     "while condition not boolean",
